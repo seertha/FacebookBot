@@ -38,10 +38,10 @@ def eventoWebhook(data):
 
 def handleMessage(sender_psid, webhook_event):
     if 'text' in webhook_event:
-        if webhook_event['text'] == 'menu':
+        if webhook_event['text'] == 'Empezar':
             menuInicio(sender_psid)
         else:
-            respuesta = {"text":"Escriba 'menu' para ver las opciones"}
+            respuesta = {"text":"Escriba 'Empezar' para ver el menú de opciones"}
             callSendAPI(sender_psid,respuesta)
 
 def handlePostback(sender_psid,webhook_postback):
@@ -52,10 +52,8 @@ def handlePostback(sender_psid,webhook_postback):
     elif payload == 'op1' or 'op2' or 'op3':
         opcion(sender_psid,payload)
     else:
-        salir_menu(sender_psid)
-        
-            
-    
+        print("SALIR")
+        salir_menu(sender_psid)   
 
 def menuInicio(sender_psid):
     respuesta = {
@@ -65,7 +63,7 @@ def menuInicio(sender_psid):
                 "template_type":"generic",
                 "elements":[
                     {
-                        "title":"Menú 1 - Deslize para más opciones.",
+                        "title":"Menú de información 1 - Deslize para ver más opciones.",
                         "buttons":[
                             {
                                "type":"postback",
@@ -85,7 +83,7 @@ def menuInicio(sender_psid):
                         ]
                     },
                     {
-                        "title":"Menú 2",
+                        "title":"Menú de información 2",
                         "buttons":[
                             {
                                "type":"postback",
@@ -102,19 +100,47 @@ def menuInicio(sender_psid):
     callSendAPI(sender_psid,respuesta)
 
 def opcion(sender_psid, payload):
+    
     if payload == 'op1':
-        respuesta = {"text":"opcion1"}
+        respuesta = {"text":"Eligió la opción 1."}
     elif payload == 'op2':
-        respuesta = {"text":"opcion2"}
+        respuesta = {"text":"Eligió la opción 2."}
     elif payload == 'op3':
-        respuesta = {"text":"opcion3"}
+        respuesta = {"text":"Eligió la opción 3."}
+    elif payload == 'cnt':
+        return menuInicio(sender_psid)
     else:
         return salir_menu(sender_psid)    
     callSendAPI(sender_psid,respuesta)
-    menuInicio(sender_psid) 
+    menuConfirmar(sender_psid)
+     
+def menuConfirmar(sender_psid):
+    respuesta = {
+        "attachment":{
+            "type":"template",
+            "payload":{
+                "template_type":"button",
+                "text":"Quiere ver más opciones?",
+                "buttons":[
+                    {
+                        "type":"postback",
+                        "title":"Sí",
+                        "payload":"cnt"
+                    },
+                    {
+                        "type":"postback",
+                        "title":"No",
+                        "payload":"salir"
+                    }
+                ]
+            }
+        }
+    }
+    callSendAPI(sender_psid,respuesta)
+
 
 def salir_menu(sender_psid):
-    respuesta = {"text":"Gracias, vuelva pronto"}    
+    respuesta = {"text":"Gracias por su visita. Si desea ver el menú de opciones escriba 'Empezar'."}    
     callSendAPI(sender_psid,respuesta)
 
 
@@ -153,5 +179,5 @@ def webhook():
             return "404"
 
 if __name__ == "__main__":
-    print("INICIO")
+    #print("INICIO")
     app.run(debug=True)
