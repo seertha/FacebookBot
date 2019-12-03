@@ -5,7 +5,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-VERIFY_TOKEN = "EAAiFKZBnaUtEBAOOFjeEAaB8ZCGvv2hw2BM7EknrrrND4Er2z6ZA0jPceoK0YjK6vtPA3DNCTDjGp5zka6mRZCF7OUEqYKWnIpXD9BgobZAOybLPCrZAPqoxc6yqYG8BrwctwKGf1wlPKm5aME26vcFvxo5ENiHaCDO1OwkQlGJ3aAAH2GlXgkGRZCD0n3o59wZD"
+VERIFY_TOKEN = "<Token_de_verificación>"
 FB_API_URL = "https://graph.facebook.com/v2.6/me/messages"
 
 def verificar_webhook(req):
