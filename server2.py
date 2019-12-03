@@ -5,7 +5,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-VERIFY_TOKEN = "<Token_de_verificación>"
+VERIFY_TOKEN = "EAAiFKZBnaUtEBAOOFjeEAaB8ZCGvv2hw2BM7EknrrrND4Er2z6ZA0jPceoK0YjK6vtPA3DNCTDjGp5zka6mRZCF7OUEqYKWnIpXD9BgobZAOybLPCrZAPqoxc6yqYG8BrwctwKGf1wlPKm5aME26vcFvxo5ENiHaCDO1OwkQlGJ3aAAH2GlXgkGRZCD0n3o59wZD"
 FB_API_URL = "https://graph.facebook.com/v2.6/me/messages"
 
 def verificar_webhook(req):
@@ -23,11 +23,11 @@ def verificar_webhook(req):
 def eventoWebhook(data):
     #Obtiene el contenido del evento
     webhook_event = data['entry'][0]['messaging']
-    print("webhook_event:{}".format(webhook_event))
+    #print("webhook_event:{}".format(webhook_event))
 
     #Obtener PSID del usuario
     sender_psid = webhook_event[0]['sender']['id']
-    print("sender_psid:{}".format(sender_psid))
+    #print("sender_psid:{}".format(sender_psid))
 
     #Verifica el tipo de evento (message o postback) y llama a la funcion correspondiente
     if 'message' in webhook_event[0]:
@@ -42,12 +42,11 @@ def handleMessage(sender_psid, webhook_event):
             menuInicio(sender_psid)
         else:
             respuesta = {"text":"Escriba 'menu' para ver las opciones"}
-            respJson = json.dumps(respuesta)
-            callSendAPI(sender_psid,respJson)
+            callSendAPI(sender_psid,respuesta)
 
 def handlePostback(sender_psid,webhook_postback):
     payload = webhook_postback['payload']
-    print("payload:{}".format(payload))
+    #print("payload:{}".format(payload))
     if payload == 'inicio':
         menuInicio(sender_psid)
     elif payload == 'op1' or 'op2' or 'op3':
@@ -100,8 +99,7 @@ def menuInicio(sender_psid):
             }
         }
     }
-    respJson = json.dumps(respuesta)
-    callSendAPI(sender_psid,respJson)
+    callSendAPI(sender_psid,respuesta)
 
 def opcion(sender_psid, payload):
     if payload == 'op1':
@@ -111,19 +109,18 @@ def opcion(sender_psid, payload):
     elif payload == 'op3':
         respuesta = {"text":"opcion3"}
     else:
-        return salir_menu(sender_psid)
-    respJson = json.dumps(respuesta)
-    callSendAPI(sender_psid,respJson)
+        return salir_menu(sender_psid)    
+    callSendAPI(sender_psid,respuesta)
     menuInicio(sender_psid) 
 
 def salir_menu(sender_psid):
-    respuesta = {"text":"Gracias, vuelva pronto"}
-    respJson = json.dumps(respuesta)
-    callSendAPI(sender_psid,respJson)
+    respuesta = {"text":"Gracias, vuelva pronto"}    
+    callSendAPI(sender_psid,respuesta)
 
 
-def callSendAPI(sender_psid, respJson):
+def callSendAPI(sender_psid, resp):
     #Mensaje de respuesta
+    respJson = json.dumps(resp)
     request_body = {
         "recipient":{
             "id":sender_psid
@@ -149,7 +146,7 @@ def webhook():
         return verificar_webhook(request)
     if request.method == 'POST':
         payload = request.json
-        print("payload_org:{}".format(payload))
+        #print("payload_org:{}".format(payload))
         if payload["object"] == "page":
             return eventoWebhook(payload)
         else:
